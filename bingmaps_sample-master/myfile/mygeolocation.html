@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>my geolocation</title>
+  </head>
+  <body>
+    <!-- Map Area -->
+
+    <input
+      type="button"
+      id="button_watch"
+      style="width: 80px; height: 40px"
+      value="watch"
+    />
+    <input
+      type="button"
+      id="button_clear"
+      style="width: 80px; height: 40px"
+      value="clear"
+    />
+    <div id="mymap"></div>
+
+    <!-- jQuery&GoogleMapsAPI -->
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <!-- /jQuery&GoogleMapsAPI -->
+
+    <!-- geolocation -->
+    <script>
+      //   成功関数
+      function mapsInit(position) {
+        alert("mapsInit");
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        const html_map = `
+          <p> あなたの現在位置は緯度：${lat} 経度：${lon}</p>
+      `;
+
+        $("#mymap").append(html_map);
+      }
+
+      //   失敗関数
+      function mapsError(error) {
+        let e = "";
+
+        if (error.code == 1) {
+          //1 =　位置情報取得が許可されていない(ブラウザ設定)
+          e = "位置情報取得が許可されていません";
+        }
+        if (error.code == 2) {
+          //2 = 現在位置を特定できない
+          e = "現在位置を特定できません";
+        }
+        if (error.code == 3) {
+          //3 = 位置情報を取得する前にタイムアウトになった場合
+          e = "タイムアウトになりました";
+        }
+        console.log("エラー：" + e);
+      }
+
+      //   位置情報取得オプション
+      const set = {
+        enableHighAccuracy: true, //より高精度な位置を求める
+        maximumAge: 20000, //現在位置取得が20秒以内であればその情報を再利用する
+        timeout: 10000, //10秒以内に現在位置を取得できなければ処理を修了
+      };
+
+      //Main関数: getCurrentPosition or watchPosition
+      //   navigator.geolocation.getCurrentPosition(mapsInit, mapsError, set);
+
+      //   let watchID = navigator.geolocation.watchPosition(
+      //     mapsInit,
+      //     mapsError,
+      //     set
+      //   );
+      //   navigator.geolocation.clearWatch(watchID);
+
+      //watch開始
+      $("#button_watch").on("click", function () {
+        watch_id = navigator.geolocation.watchPosition(
+          mapsInit,
+          mapsError,
+          set
+        );
+      });
+
+      //watch終了
+      $("#button_clear").on("click", function () {
+        //  なんだこれ？？
+        if (watch_id !== undefined) {
+          navigator.geolocation(watch_id);
+          watch_id = undefined;
+        }
+      });
+    </script>
+    <!-- /geolocation -->
+  </body>
+</html>

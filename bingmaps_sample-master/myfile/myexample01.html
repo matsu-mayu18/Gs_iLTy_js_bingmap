@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>my example01</title>
+  </head>
+  <body>
+    <!-- map Area -->
+    <div
+      id="myMap"
+      style="position: relative; width: 600px; height: 400px"
+    ></div>
+    <!-- /map Area -->
+
+    <script
+      type="text/javascript"
+      src="https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Aj5n7p1XxzWg8e0urVGNdJxQtrA1gAl050nNo9SLSlnIyJFJIFsWFN7_s7vK6nUV"
+      async
+      defer
+    ></script>
+
+    <script>
+      var map;
+      function GetMap() {
+        map = new Microsoft.Maps.Map(document.getElementById("myMap"), {});
+
+        //Request user's current location
+        navigator.geolocation.getCurrentPosition(function (position) {
+          var location = new Microsoft.Maps.location(
+            position.coords.latitude,
+            position.coords.longigtude
+          );
+
+          //ユーザの現在位置にプッシュピンを追加
+          var pin = new Microsoft.Maps.Pushpin(location);
+          map.entities.push(pin);
+
+          //center the map on the user's location
+          map.setView({ center: location, zoom: 15 });
+        });
+      }
+    </script>
+  </body>
+</html>
